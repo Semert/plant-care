@@ -4,6 +4,10 @@ import helmet from "helmet";
 import dotenv from "dotenv";
 import connectDB from "./config/db";
 
+import householdRoutes from "./routes/householdRoutes";
+import plantRoutes from "./routes/plantRoutes";
+import plantHealthRoutes from "./routes/plantHealthRoutes";
+
 // Load environment variables
 dotenv.config();
 
@@ -18,10 +22,9 @@ app.use(cors());
 app.use(helmet());
 app.use(express.json());
 
-// Define Routes (will add these later)
-// app.use('/api/households', require('./routes/householdRoutes'));
-// app.use('/api/plants', require('./routes/plantRoutes'));
-// app.use('/api/health', require('./routes/healthRoutes'));
+app.use("/api/households", householdRoutes);
+app.use("/api/plants", plantRoutes);
+app.use("/api/health", plantHealthRoutes);
 
 // Basic health check route
 app.get("/", (req, res) => {
