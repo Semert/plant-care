@@ -1,9 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { createEpicMiddleware } from "redux-observable";
-import { rootEpic } from "./epics";
 import householdsReducer from "./slices/householdsSlice";
 import plantsReducer from "./slices/plantsSlice";
 import healthReducer from "./slices/healthSlice";
+import uiReducer from "./slices/uiSlice";
+import { rootEpic } from "./epics";
 
 const epicMiddleware = createEpicMiddleware();
 
@@ -12,6 +13,7 @@ export const store = configureStore({
     households: householdsReducer,
     plants: plantsReducer,
     health: healthReducer,
+    ui: uiReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
