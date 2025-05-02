@@ -6,6 +6,12 @@ A full-stack application that leverages weather data to help users monitor and m
 
 This application allows users to track plants across multiple locations, monitor their health based on actual weather conditions compared to their needs, and visualize historical health data. By comparing expected water/humidity requirements with real-time weather data, the app provides valuable insights into plant care needs.
 
+## Screenshots
+
+![Dashboard](screenshots/dashboard.png)
+![Households](screenshots/households.png)
+![Plants](screenshots/plants.png)
+
 ## Features
 
 - **Household Management**: Create and manage multiple households/locations

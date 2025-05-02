@@ -22,8 +22,6 @@ export const fetchPlantHealthEpic = (action$: any) =>
             healthScore: record.healthScore,
           }));
 
-          console.log(records);
-
           // Important: Return the correct structure expected by the reducer
           return healthActions.fetchPlantHealthSuccess({
             plantId: action.payload,

@@ -503,6 +503,7 @@ const Dashboard: React.FC = () => {
                                         </Typography>
                                       </Box>
                                     }
+                                    disableTypography // 👈 This disables the default <p> wrapper
                                   />
                                 </ListItem>
                               </React.Fragment>
@@ -568,6 +569,7 @@ const Dashboard: React.FC = () => {
                                     }}
                                   >
                                     <ListItemText
+                                      disableTypography // 👈 This prevents internal <p> wrappers
                                       primary={
                                         <Typography
                                           variant="subtitle1"
@@ -590,7 +592,10 @@ const Dashboard: React.FC = () => {
                                               mr: 1,
                                             }}
                                           />
-                                          <Typography variant="body2">
+                                          <Typography
+                                            variant="body2"
+                                            component="span"
+                                          >
                                             {/* @ts-ignore */}
                                             {Math.round(plant.healthScore)}%
                                             Health
@@ -643,6 +648,7 @@ const Dashboard: React.FC = () => {
                                     }}
                                   >
                                     <ListItemText
+                                      disableTypography
                                       primary={
                                         <Typography
                                           variant="subtitle1"
