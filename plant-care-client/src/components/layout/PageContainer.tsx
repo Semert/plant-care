@@ -1,5 +1,5 @@
 import React, { ReactNode } from "react";
-import { Container, Box, Typography, Paper } from "@mui/material";
+import { Box, Typography, Paper } from "@mui/material";
 
 interface PageContainerProps {
   title: string;
@@ -8,14 +8,40 @@ interface PageContainerProps {
 
 const PageContainer: React.FC<PageContainerProps> = ({ title, children }) => {
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+    <Box
+      sx={{
+        width: "100%",
+        p: { xs: 2, sm: 3, md: 4 },
+        display: "flex",
+        flexDirection: "column",
+        flex: 1,
+      }}
+    >
       <Typography variant="h4" component="h1" gutterBottom>
         {title}
       </Typography>
-      <Paper elevation={3} sx={{ p: 3 }}>
-        <Box>{children}</Box>
+      <Paper
+        elevation={3}
+        sx={{
+          p: 3,
+          display: "flex",
+          flexDirection: "column",
+          flex: 1,
+          width: "100%",
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            flex: 1,
+            width: "100%",
+          }}
+        >
+          {children}
+        </Box>
       </Paper>
-    </Container>
+    </Box>
   );
 };
 

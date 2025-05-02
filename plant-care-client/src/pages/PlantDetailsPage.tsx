@@ -129,7 +129,8 @@ const PlantDetailsPage: React.FC = () => {
               {latestRecord && (
                 <>
                   <Typography variant="body1" gutterBottom>
-                    <strong>Health Score:</strong> {latestRecord.healthScore}%
+                    <strong>Health Score:</strong>{" "}
+                    {Math.round(latestRecord.healthScore)}%
                   </Typography>
                   <Typography variant="body1" gutterBottom>
                     <strong>Last Updated:</strong>{" "}
@@ -137,11 +138,11 @@ const PlantDetailsPage: React.FC = () => {
                   </Typography>
                   <Typography variant="body1" gutterBottom>
                     <strong>Recent Rainfall:</strong>{" "}
-                    {latestRecord.actualRainfall} mm
+                    {Math.round(latestRecord.actualRainfall)} mm
                   </Typography>
                   <Typography variant="body1" gutterBottom>
                     <strong>Recent Humidity:</strong>{" "}
-                    {latestRecord.actualHumidity}%
+                    {Math.round(latestRecord.actualHumidity)}%
                   </Typography>
                 </>
               )}

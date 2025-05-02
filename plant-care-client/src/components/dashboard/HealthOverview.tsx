@@ -6,7 +6,6 @@ import {
   Typography,
   Grid,
   LinearProgress,
-  useTheme,
 } from "@mui/material";
 
 interface HealthStats {
@@ -22,8 +21,6 @@ interface HealthOverviewProps {
 }
 
 const HealthOverview: React.FC<HealthOverviewProps> = ({ stats }) => {
-  const theme = useTheme();
-
   // Calculate percentages
   const goodPercent = (stats.good / stats.total) * 100 || 0;
   const warningPercent = (stats.warning / stats.total) * 100 || 0;
