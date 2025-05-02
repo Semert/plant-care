@@ -9,8 +9,12 @@ This application allows users to track plants across multiple locations, monitor
 ## Screenshots
 
 ![Dashboard](screenshots/dashboard.png)
+
 ![Households](screenshots/households.png)
+
 ![Plants](screenshots/plants.png)
+
+![Plants More](screenshots/plantsmore.png)
 
 ## Features
 
