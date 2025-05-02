@@ -2,6 +2,10 @@
 
 A full-stack application that leverages weather data to help users monitor and maintain their plants' health based on environmental conditions.
 
+### Back-end: https://plant-care-uvkc.onrender.com
+
+### Front-end: https://plant-care-semih.netlify.app
+
 ## Overview
 
 This application allows users to track plants across multiple locations, monitor their health based on actual weather conditions compared to their needs, and visualize historical health data. By comparing expected water/humidity requirements with real-time weather data, the app provides valuable insights into plant care needs.
