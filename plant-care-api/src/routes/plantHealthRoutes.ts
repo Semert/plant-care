@@ -3,6 +3,8 @@ import {
   getPlantHealth,
   getPlantHealthByDateRange,
   createHealthRecord,
+  updateAllHealth,
+  updateSinglePlantHealth,
 } from "../controllers/plantHealthController";
 
 const router = express.Router();
@@ -15,5 +17,11 @@ router.get("/plant/:plantId/range", getPlantHealthByDateRange);
 
 // POST /api/health
 router.post("/", createHealthRecord);
+
+// POST /api/health/update
+router.post("/update", updateAllHealth);
+
+// POST /api/health/plant/:plantId/update
+router.post("/plant/:plantId/update", updateSinglePlantHealth);
 
 export default router;

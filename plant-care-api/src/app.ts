@@ -8,6 +8,8 @@ import householdRoutes from "./routes/householdRoutes";
 import plantRoutes from "./routes/plantRoutes";
 import plantHealthRoutes from "./routes/plantHealthRoutes";
 
+import { notFound, errorHandler } from "./middleware/errorMiddleware";
+
 // Load environment variables
 dotenv.config();
 
@@ -25,6 +27,9 @@ app.use(express.json());
 app.use("/api/households", householdRoutes);
 app.use("/api/plants", plantRoutes);
 app.use("/api/health", plantHealthRoutes);
+
+app.use(notFound);
+app.use(errorHandler);
 
 // Basic health check route
 app.get("/", (req, res) => {
