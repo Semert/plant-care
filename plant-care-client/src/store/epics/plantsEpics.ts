@@ -23,6 +23,7 @@ export const fetchPlantsEpic = (action$: any) =>
             createdAt: p.createdAt,
             updatedAt: p.updatedAt,
           }));
+
           return plantsActions.fetchPlantsSuccess(plants);
         }),
         catchError((err) => {
@@ -108,9 +109,10 @@ export const fetchPlantByIdEpic = (action$: any) =>
 export const createPlantEpic = (action$: any) =>
   action$.pipe(
     ofType(plantsActions.createPlantRequest.type),
-    mergeMap((action) =>
-      from(api.post("/plants", (action as { payload: string }).payload)).pipe(
-        map((response) => {
+    mergeMap((action: { type: string; payload: string }) =>
+      from(api.post("/plants", action.payload)).pipe(
+        // Changed 'map' to 'mergeMap' to handle multiple actions
+        mergeMap((response) => {
           // Transform API response
           const plant = {
             id: response.data._id,
@@ -122,21 +124,23 @@ export const createPlantEpic = (action$: any) =>
             createdAt: response.data.createdAt,
             updatedAt: response.data.updatedAt,
           };
-          return of(
+          // Return array of actions instead of using 'of'
+          return [
             plantsActions.createPlantSuccess(plant),
             uiActions.setAlert({
               type: "success",
               message: `Plant "${plant.name}" created successfully`,
-            })
-          );
+            }),
+          ];
         }),
         catchError((err) => {
           const errorMsg =
             err.response?.data?.message || "Failed to create plant";
-          return of(
+          // Return array of actions instead of using 'of'
+          return [
             plantsActions.plantsFailure(errorMsg),
-            uiActions.setAlert({ type: "error", message: errorMsg })
-          );
+            uiActions.setAlert({ type: "error", message: errorMsg }),
+          ];
         })
       )
     )
@@ -146,15 +150,12 @@ export const createPlantEpic = (action$: any) =>
 export const updatePlantEpic = (action$: any) =>
   action$.pipe(
     ofType(plantsActions.updatePlantRequest.type),
-    mergeMap((action) =>
-      from(
-        api.put(
-          `/plants/${
-            (action as { payload: { id: number; data: string } }).payload.id
-          }`,
-          (action as { payload: { id: number; data: string } }).payload.data
-        )
-      ).pipe(
+    mergeMap((action) => {
+      // Extract id and data from action.payload
+      // @ts-ignore
+      const { id, data } = action.payload;
+
+      return from(api.put(`/plants/${id}`, data)).pipe(
         map((response) => {
           // Transform API response
           const plant = {
@@ -167,52 +168,42 @@ export const updatePlantEpic = (action$: any) =>
             createdAt: response.data.createdAt,
             updatedAt: response.data.updatedAt,
           };
-          return of(
-            plantsActions.updatePlantSuccess(plant),
-            uiActions.setAlert({
-              type: "success",
-              message: `Plant "${plant.name}" updated successfully`,
-            })
-          );
+          return plantsActions.updatePlantSuccess(plant);
         }),
-        catchError((err) => {
+        catchError((error) => {
           const errorMsg =
-            err.response?.data?.message || "Failed to update plant";
-          return of(
-            plantsActions.plantsFailure(errorMsg),
-            uiActions.setAlert({ type: "error", message: errorMsg })
-          );
+            error.response?.data?.message || "Failed to update plant";
+          return of(plantsActions.plantsFailure(errorMsg));
         })
-      )
-    )
+      );
+    })
   );
 
 // Epic to delete a plant
 export const deletePlantEpic = (action$: any) =>
   action$.pipe(
     ofType(plantsActions.deletePlantRequest.type),
-    mergeMap((action) =>
-      from(
-        api.delete(`/plants/${(action as { payload: string }).payload}`)
-      ).pipe(
-        map(() => {
-          return of(
-            plantsActions.deletePlantSuccess(
-              (action as { payload: string }).payload
-            ),
+    mergeMap((action: { type: string; payload: string }) =>
+      from(api.delete(`/plants/${action.payload}`)).pipe(
+        // Changed 'map' to 'mergeMap' to handle multiple actions
+        mergeMap(() => {
+          // Return array of actions instead of using 'of'
+          return [
+            plantsActions.deletePlantSuccess(action.payload),
             uiActions.setAlert({
               type: "success",
               message: "Plant deleted successfully",
-            })
-          );
+            }),
+          ];
         }),
         catchError((err) => {
           const errorMsg =
             err.response?.data?.message || "Failed to delete plant";
-          return of(
+          // Return array of actions instead of using 'of'
+          return [
             plantsActions.plantsFailure(errorMsg),
-            uiActions.setAlert({ type: "error", message: errorMsg })
-          );
+            uiActions.setAlert({ type: "error", message: errorMsg }),
+          ];
         })
       )
     )

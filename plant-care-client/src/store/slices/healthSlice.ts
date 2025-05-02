@@ -49,13 +49,13 @@ const healthSlice = createSlice({
       state.records[plantId] = records;
       state.loading = false;
     },
+
     updatePlantHealthSuccess: (state, action: PayloadAction<PlantHealth>) => {
       const { plantId } = action.payload;
       if (!state.records[plantId]) {
         state.records[plantId] = [];
       }
 
-      // Add the new record and sort by date (descending)
       state.records[plantId] = [action.payload, ...state.records[plantId]].sort(
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
       );

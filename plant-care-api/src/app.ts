@@ -20,9 +20,27 @@ const app = express();
 connectDB();
 
 // Middleware
-app.use(cors());
-app.use(helmet());
+// app.use(cors());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false,
+  })
+);
+
 app.use(express.json());
+
+app.use(
+  cors({
+    origin: "*", // or set to specific origin like "http://localhost:3000"
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+// Basic health check route
+app.get("/", (req, res) => {
+  res.json({ message: "Plant Care API is running" });
+});
 
 app.use("/api/households", householdRoutes);
 app.use("/api/plants", plantRoutes);
@@ -31,15 +49,10 @@ app.use("/api/health", plantHealthRoutes);
 app.use(notFound);
 app.use(errorHandler);
 
-// Basic health check route
-app.get("/", (req, res) => {
-  res.json({ message: "Plant Care API is running" });
-});
-
 // Port configuration
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Start server
-app.listen(PORT, () => {
+app.listen(5001, () => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
 });

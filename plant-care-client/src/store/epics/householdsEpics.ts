@@ -69,11 +69,10 @@ export const fetchHouseholdByIdEpic = (action$: any) =>
 export const createHouseholdEpic = (action$: any) =>
   action$.pipe(
     ofType(householdsActions.createHouseholdRequest.type),
-    mergeMap((action) =>
-      from(
-        api.post("/households", (action as { payload: string }).payload)
-      ).pipe(
-        map((response) => {
+    mergeMap((action: { type: string; payload: string }) =>
+      from(api.post("/households", action.payload)).pipe(
+        // Changed 'map' to 'mergeMap' to handle multiple actions
+        mergeMap((response) => {
           // Transform API response
           const household = {
             id: response.data._id,
@@ -82,21 +81,23 @@ export const createHouseholdEpic = (action$: any) =>
             createdAt: response.data.createdAt,
             updatedAt: response.data.updatedAt,
           };
-          return of(
+          // Return array of actions instead of using 'of'
+          return [
             householdsActions.createHouseholdSuccess(household),
             uiActions.setAlert({
               type: "success",
               message: `Household "${household.name}" created successfully`,
-            })
-          );
+            }),
+          ];
         }),
         catchError((err) => {
           const errorMsg =
             err.response?.data?.message || "Failed to create household";
-          return of(
+          // Return array of actions instead of using 'of'
+          return [
             householdsActions.householdsFailure(errorMsg),
-            uiActions.setAlert({ type: "error", message: errorMsg })
-          );
+            uiActions.setAlert({ type: "error", message: errorMsg }),
+          ];
         })
       )
     )
@@ -106,16 +107,13 @@ export const createHouseholdEpic = (action$: any) =>
 export const updateHouseholdEpic = (action$: any) =>
   action$.pipe(
     ofType(householdsActions.updateHouseholdRequest.type),
-    mergeMap((action) =>
+    mergeMap((action: { type: string; payload: string }) =>
       from(
-        api.put(
-          `/households/${
-            (action as { payload: { id: number; data: string } }).payload.id
-          }`,
-          (action as { payload: { id: number; data: string } }).payload.data
-        )
+        // @ts-ignore
+        api.put(`/households/${action.payload.id}`, action.payload.data)
       ).pipe(
-        map((response) => {
+        // The problem is here - map should return an action, not an observable
+        mergeMap((response) => {
           // Transform API response
           const household = {
             id: response.data._id,
@@ -124,21 +122,23 @@ export const updateHouseholdEpic = (action$: any) =>
             createdAt: response.data.createdAt,
             updatedAt: response.data.updatedAt,
           };
-          return of(
+          // Return array of actions instead of using 'of'
+          return [
             householdsActions.updateHouseholdSuccess(household),
             uiActions.setAlert({
               type: "success",
               message: `Household "${household.name}" updated successfully`,
-            })
-          );
+            }),
+          ];
         }),
         catchError((err) => {
           const errorMsg =
             err.response?.data?.message || "Failed to update household";
-          return of(
+          // Return array of actions instead of using 'of'
+          return [
             householdsActions.householdsFailure(errorMsg),
-            uiActions.setAlert({ type: "error", message: errorMsg })
-          );
+            uiActions.setAlert({ type: "error", message: errorMsg }),
+          ];
         })
       )
     )
@@ -148,28 +148,25 @@ export const updateHouseholdEpic = (action$: any) =>
 export const deleteHouseholdEpic = (action$: any) =>
   action$.pipe(
     ofType(householdsActions.deleteHouseholdRequest.type),
-    mergeMap((action) =>
-      from(
-        api.delete(`/households/${(action as { payload: string }).payload}`)
-      ).pipe(
-        map(() => {
-          return of(
-            householdsActions.deleteHouseholdSuccess(
-              (action as { payload: string }).payload
-            ),
+    mergeMap((action: { type: string; payload: string }) =>
+      from(api.delete(`/households/${action.payload}`)).pipe(
+        mergeMap(() => {
+          return [
+            householdsActions.deleteHouseholdSuccess(action.payload),
             uiActions.setAlert({
               type: "success",
               message: "Household deleted successfully",
-            })
-          );
+            }),
+          ];
         }),
         catchError((err) => {
           const errorMsg =
             err.response?.data?.message || "Failed to delete household";
-          return of(
+          // Return array of actions instead of using 'of'
+          return [
             householdsActions.householdsFailure(errorMsg),
-            uiActions.setAlert({ type: "error", message: errorMsg })
-          );
+            uiActions.setAlert({ type: "error", message: errorMsg }),
+          ];
         })
       )
     )

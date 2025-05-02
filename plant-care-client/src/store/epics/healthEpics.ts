@@ -9,12 +9,10 @@ import { uiActions } from "../slices/uiSlice";
 export const fetchPlantHealthEpic = (action$: any) =>
   action$.pipe(
     ofType(healthActions.fetchPlantHealthRequest.type),
-    mergeMap((action) =>
-      from(
-        api.get(`/health/plant/${(action as { payload: string }).payload}`)
-      ).pipe(
+    mergeMap((action: { type: string; payload: string }) =>
+      from(api.get(`/health/plant/${action.payload}`)).pipe(
         map((response) => {
-          // Transform API response
+          // Transform API response to match expected format
           const records = response.data.map((record: any) => ({
             id: record._id,
             plantId: record.plantId,
@@ -23,19 +21,23 @@ export const fetchPlantHealthEpic = (action$: any) =>
             actualHumidity: record.actualHumidity,
             healthScore: record.healthScore,
           }));
+
+          console.log(records);
+
+          // Important: Return the correct structure expected by the reducer
           return healthActions.fetchPlantHealthSuccess({
-            plantId: (action as { payload: string }).payload,
-            records,
+            plantId: action.payload,
+            records: records,
           });
         }),
         catchError((err) => {
           const errorMsg =
             err.response?.data?.message ||
             "Failed to fetch plant health records";
-          return of(
+          return [
             healthActions.healthFailure(errorMsg),
-            uiActions.setAlert({ type: "error", message: errorMsg })
-          );
+            uiActions.setAlert({ type: "error", message: errorMsg }),
+          ];
         })
       )
     )
@@ -83,17 +85,13 @@ export const fetchPlantHealthByDateRangeEpic = (action$: any) =>
     })
   );
 
-// Epic to update health for a specific plant
 export const updatePlantHealthEpic = (action$: any) =>
   action$.pipe(
     ofType(healthActions.updatePlantHealthRequest.type),
-    mergeMap((action) =>
-      from(
-        api.post(
-          `/health/plant/${(action as { payload: string }).payload}/update`
-        )
-      ).pipe(
-        map((response) => {
+    mergeMap((action: { type: string; payload: string }) =>
+      from(api.post(`/health/plant/${action.payload}/update`)).pipe(
+        // Changed 'map' to 'mergeMap' to handle multiple actions
+        mergeMap((response) => {
           // Transform API response
           const healthRecord = {
             id: response.data.healthRecord._id,
@@ -103,21 +101,26 @@ export const updatePlantHealthEpic = (action$: any) =>
             actualHumidity: response.data.healthRecord.actualHumidity,
             healthScore: response.data.healthRecord.healthScore,
           };
-          return of(
+          // Return array of actions instead of using 'of'
+          return [
             healthActions.updatePlantHealthSuccess(healthRecord),
             uiActions.setAlert({
               type: "success",
               message: "Plant health updated successfully",
-            })
-          );
+            }),
+          ];
         }),
         catchError((err) => {
           const errorMsg =
             err.response?.data?.message || "Failed to update plant health";
-          return of(
+          // Return array of actions instead of using 'of'
+          return [
             healthActions.healthFailure(errorMsg),
-            uiActions.setAlert({ type: "error", message: errorMsg })
-          );
+            uiActions.setAlert({
+              type: "error",
+              message: errorMsg,
+            }),
+          ];
         })
       )
     )
@@ -129,22 +132,25 @@ export const updateAllPlantsHealthEpic = (action$: any) =>
     ofType(healthActions.updateAllPlantsHealthRequest.type),
     mergeMap(() =>
       from(api.post("/health/update")).pipe(
-        map((response) => {
-          return of(
+        // Changed 'map' to 'mergeMap' to handle multiple actions
+        mergeMap((response) => {
+          // Return array of actions instead of using 'of'
+          return [
             healthActions.updateAllPlantsHealthSuccess(),
             uiActions.setAlert({
               type: "success",
               message: `Successfully updated health for ${response.data.count} plants`,
-            })
-          );
+            }),
+          ];
         }),
         catchError((err) => {
           const errorMsg =
             err.response?.data?.message || "Failed to update all plants health";
-          return of(
+          // Return array of actions instead of using 'of'
+          return [
             healthActions.healthFailure(errorMsg),
-            uiActions.setAlert({ type: "error", message: errorMsg })
-          );
+            uiActions.setAlert({ type: "error", message: errorMsg }),
+          ];
         })
       )
     )

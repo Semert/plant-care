@@ -1,4 +1,3 @@
-// src/components/households/HouseholdForm.tsx
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
@@ -10,7 +9,7 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import { Household, Location } from "../../types";
+import { Location } from "../../types";
 import { RootState } from "../../store";
 import { householdsActions } from "../../store/slices/householdsSlice";
 
