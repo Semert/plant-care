@@ -1,0 +1,28 @@
+import React from "react";
+import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
+
+const Header: React.FC = () => {
+  return (
+    <AppBar position="static">
+      <Toolbar>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          Plant Care App
+        </Typography>
+        <Box>
+          <Button color="inherit" component={RouterLink} to="/">
+            Dashboard
+          </Button>
+          <Button color="inherit" component={RouterLink} to="/households">
+            Households
+          </Button>
+          <Button color="inherit" component={RouterLink} to="/plants">
+            Plants
+          </Button>
+        </Box>
+      </Toolbar>
+    </AppBar>
+  );
+};
+
+export default Header;
