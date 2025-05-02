@@ -56,6 +56,7 @@ const Dashboard: React.FC = () => {
         dispatch(healthActions.fetchPlantHealthRequest(plant.id));
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, plants.length]);
 
   const handleUpdateAllHealth = () => {
